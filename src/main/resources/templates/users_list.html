@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <title>Company Direction</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}"/>
+    <link rel="stylesheet" th:href="@{/css/background.css}"/>
+    <link type="text/javascript" th:href="@{/js/bootstrap.js}"/>
+    <link rel="stylesheet" th:href="@{https://cdn.datatables.net/1.10.2/css/jquery.dataTables.min.css}">
+    <link th:href="@{https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css}" rel="stylesheet"/>
+    <link rel="stylesheet"
+          th:href="@{https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css}"/>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light" style="background-color: #e0e0d1 !important;">
+    <a class="navbar-brand" href="/index">
+        <img th:src="@{/img/eni-logo.png}" alt="CompanyDirectory"
+             style="height: 20%; width: 20%;"/>Company<span
+            style="color: yellow">Directory</span>
+    </a>&nbsp;&nbsp;&nbsp;
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="/index">Главная <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownUsers" role="button"
+                   data-toggle="dropdown"
+                   aria-haspopup="true" aria-expanded="false">Данные об организации</a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdownUsers">
+                    <a class="dropdown-item" href="/allUsers">Список пользователей</a>
+                    <a class="dropdown-item" href="/allHierarchy">Иерархия</a>
+                    <div class="dropdown-divider"></div>
+<!--                    <a class="dropdown-item" href="/positionsHierarchy">ТЕСТ</a>-->
+                    <a class="dropdown-item" href="/showTree">Древо</a>
+                </div>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link">|</a>
+            </li>
+            <li>
+                <a class="navbar-brand"><p th:utext="${user_attr.displayName}"></p></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link">|</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/logout">Logout</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+<div class="container text-center">
+    <h1>Users List</h1>
+    <a href="/new">Create New Users</a>
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered table-sm" id="myTable">
+            <thead>
+            <tr>
+                <th>User ID</th>
+                <th>Name</th>
+                <th>Role</th>
+                <th>Display name</th>
+                <th>Salary</th>
+                <div th:switch="${user_attr.getUserRoleRef()}">
+                    <!--Админ может удалять и изменить-->
+                    <div th:case="1">
+                        <th>Actions</th>
+                    </div>
+                    <!--Модер может удалять и изменять-->
+                    <div th:case="2">
+                        <th>Actions</th>
+                    </div>
+                </div>
+
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="users : ${listUsers}">
+                <td th:text="${users.userId}">id</td>
+                <td th:text="${users.userName}">userName</td>
+                <td th:text="${users.userRoleRef}">userRoleRef</td>
+                <td th:text="${users.displayName}">displayName</td>
+                <td th:text="${users.salary}">Salary</td>
+                <div th:switch="${user_attr.getUserRoleRef()}">
+                    <!--Админ может удалять и изменить-->
+                    <div th:case="1">
+                        <td>
+                            <a th:href="@{/edit/{id}(id=${users.userId})}">Edit</a>
+                            &nbsp;&nbsp;&nbsp;
+                            <a th:href="@{/delete/{id}(id=${users.userId})}">Delete</a>
+                        </td>
+                    </div>
+                    <!--Модер может удалять и изменять-->
+                    <div th:case="2">
+                        <td>
+                            <a th:href="@{/edit/{id}(id=${users.userId})}">Edit</a>
+                            &nbsp;&nbsp;&nbsp;
+                            <a th:href="@{/delete/{id}(id=${users.userId})}">Delete</a>
+                        </td>
+                    </div>
+                </div>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<script th:src="@{https://code.jquery.com/jquery-3.2.1.min.js}"></script>
+<script type="text/javascript" th:src="@{https://cdn.datatables.net/1.10.2/js/jquery.dataTables.min.js}"></script>
+<script th:src="@{https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js}"></script>
+<script>
+    $(document).ready(function () {
+        $('#myTable').dataTable({
+            "oLanguage": {
+                "oPaginate": {
+                    "sPrevious": "<-",
+                    "sNext": "->",
+                    "sLast": "-->>"
+                },
+                "sZeroRecords": "Записей не найдено :-(",
+                "sInfoEmpty": "Предоставлено 0 до 0 из 0 записей",
+                "sInfoFiltered": "(найдено из _MAX_ общих записей)",
+                "sInfo": "Предоставляю от _START_ до _END_ из _TOTAL_ записей",
+                "sSearch": "Поиск:",
+                "sLoadingRecords": "Ожидайте - загружаю...",
+                "sLengthMenu": 'Показать <select>' +
+                        '<option value="10">10</option>' +
+                        '<option value="20">20</option>' +
+                        '<option value="30">30</option>' +
+                        '<option value="40">40</option>' +
+                        '<option value="50">50</option>' +
+                        '<option value="-1">Все</option>' +
+                        '</select> записи/ей'
+            }
+        });
+    })
+</script>
+</body>
+</html>

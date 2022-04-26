@@ -22,6 +22,8 @@ public class UserRestController {
     private UsersService service;
     @Autowired
     private PositionHierarchyService positionHierarchyService;
+    @Autowired
+    private HierarchyService hierarchyService;
 
     @GetMapping(value = "/users", produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
@@ -33,5 +35,10 @@ public class UserRestController {
     @ResponseStatus(HttpStatus.OK)
     public List<PositionHierarchy> getAllPositionHierarchy() {
         return positionHierarchyService.listAll();
+    }
+
+    @GetMapping(value = "/showTree", produces = APPLICATION_JSON_VALUE)
+    public List<HierarchyTree> showTree() {
+        return hierarchyService.getAllTree();
     }
 }

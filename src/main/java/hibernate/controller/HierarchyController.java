@@ -99,14 +99,14 @@ public class HierarchyController {
         return "redirect:/allHierarchy";
     }
 
-    @GetMapping("/showTree")
-    public String showTree(Model model) {
-        if (UserController.getUserData() == null) {
-            return "redirect:/";
-        }
-        model.addAttribute("tree", hierarchyService.getAllTree());
-        model.addAttribute("user_attr", UserController.getUserData());
-        return "tree";
-    }
+//    @GetMapping("/showTree")
+//    public String showTree(Model model) {
+//        if (UserController.getUserData() == null) {
+//            return "redirect:/";
+//        }
+//        model.addAttribute("tree", hierarchyService.getAllTree());
+//        model.addAttribute("user_attr", UserController.getUserData());
+//        return "tree";
+//    }
 }
 
